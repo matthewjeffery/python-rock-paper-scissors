@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import getpass
 from random import randint
 
 
@@ -48,17 +49,16 @@ player_1 = ""
 while player_1 not in [1, 2, 3]:
     if multiplayer:
         player_1_name = "Player 1"
-        player_1_attack_input = "Player 1: " + attack_input
+        player_1 = int(getpass.getpass(player_1_name + ": " + attack_input))
     else:
         player_1_name = "Player"
-        player_1_attack_input = attack_input
-    player_1 = int(input(player_1_attack_input))
+        player_1 = int(input(attack_input))
 
 # Get player_2 attack choice
 if multiplayer:
     player_2 = ""
     while player_2 not in [1, 2, 3]:
-        player_2 = int(input("Player 2: " + attack_input))
+        player_2 = int(getpass.getpass("Player 2: " + attack_input))
 else:
     player_2 = randint(1, 3)
 
