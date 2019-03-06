@@ -49,16 +49,20 @@ player_1 = ""
 while player_1 not in [1, 2, 3]:
     if multiplayer:
         player_1_name = "Player 1"
-        player_1 = int(getpass.getpass(player_1_name + ": " + attack_input))
+        player_1 = getpass.getpass(player_1_name + ": " + attack_input)
     else:
         player_1_name = "Player"
-        player_1 = int(input(attack_input))
+        player_1 = input(attack_input)
+    if player_1.isnumeric():
+        player_1 = int(player_1)
 
 # Get player_2 attack choice
 if multiplayer:
     player_2 = ""
     while player_2 not in [1, 2, 3]:
-        player_2 = int(getpass.getpass("Player 2: " + attack_input))
+        player_2 = getpass.getpass(player_2_name + ": " + attack_input)
+        if player_2.isnumeric():
+            player_2 = int(player_2)
 else:
     player_2 = randint(1, 3)
 
