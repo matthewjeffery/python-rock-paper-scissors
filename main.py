@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 from random import randint
 
 
@@ -13,17 +14,18 @@ def attack_method(int):
     return switcher.get(int)
 
 
-# Set the type of opponent
-play_computer = ""
-multiplayer = False
-while play_computer not in ["y", "Y", "yes", "Yes", "n", "N", "no", "No"]:
-    play_computer = input('Play the computer? [y/n] ')
+# Define the script arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
+args = parser.parse_args()
 
-# Set the opponent name
-opponent_name = "Computer"
-if play_computer not in ["y", "Y", "yes", "Yes"]:
-    opponent_name = "Player 2"
+# Determine if that game will be multiplayer
+multiplayer = False
+if args.multiplayer:
     multiplayer = True
+    player_2_name = "Player 2"
+else:
+    player_2_name = "Computer"
 
 # Set the attack choices input
 attack_input = "Rock (1), Paper (2), Scissors (3)? "
@@ -32,12 +34,12 @@ attack_input = "Rock (1), Paper (2), Scissors (3)? "
 player_1 = ""
 while player_1 not in [1, 2, 3]:
     if multiplayer:
-        player_name = "Player 1"
-        player_1_input = "Player 1: " + attack_input
+        player_1_name = "Player 1"
+        player_1_attack_input = "Player 1: " + attack_input
     else:
-        player_name = "Player"
-        player_1_input = attack_input
-    player_1 = int(input(player_1_input))
+        player_1_name = "Player"
+        player_1_attack_input = attack_input
+    player_1 = int(input(player_1_attack_input))
 
 # Get player_2 attack choice
 if multiplayer:
@@ -48,38 +50,20 @@ else:
     player_2 = randint(1, 3)
 
 # Output the attack choices
-print(f"{attack_method(player_1)} ({player_name}) vs {attack_method(player_2)} ({opponent_name})")
+print(f"{attack_method(player_1)} ({player_1_name}) vs {attack_method(player_2)} ({player_2_name})")
 
 # Output the attack outcome
 if player_1 == player_2:
     print("DRAW!")
 elif player_1 == 1 and player_2 == 3:
-    if multiplayer:
-        print("Player 1 wins!")
-    else:
-        print("Player wins!")
+    print(f"{player_1_name} wins!")
 elif player_1 == 1 and player_2 == 2:
-    if multiplayer:
-        print("Player 2 wins!")
-    else:
-        print("Computer wins!")
+    print(f"{player_2_name} wins!")
 elif player_1 == 2 and player_2 == 1:
-    if multiplayer:
-        print("Player 1 wins!")
-    else:
-        print("Player wins!")
+    print(f"{player_1_name} wins!")
 elif player_1 == 2 and player_2 == 3:
-    if multiplayer:
-        print("Player 2 wins!")
-    else:
-        print("Computer wins!")
+    print(f"{player_2_name} wins!")
 elif player_1 == 3 and player_2 == 2:
-    if multiplayer:
-        print("Player 1 wins!")
-    else:
-        print("Player wins!")
+    print(f"{player_1_name} wins!")
 elif player_1 == 3 and player_2 == 1:
-    if multiplayer:
-        print("Player 2 wins!")
-    else:
-        print("Computer wins!")
+    print(f"{player_2_name} wins!")
