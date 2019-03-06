@@ -2,14 +2,16 @@
 
 from random import randint
 
+
 # Get the readable attack method name
 def attack_method(int):
     switcher = {
-        1:"ROCK",
-        2:"PAPER",
-        3:"SCISSORS"
+        1: "ROCK",
+        2: "PAPER",
+        3: "SCISSORS"
     }
     return switcher.get(int)
+
 
 # Set the type of opponent
 play_computer = ""
@@ -43,7 +45,7 @@ if multiplayer:
     while player_2 not in [1, 2, 3]:
         player_2 = int(input("Player 2: " + attack_input))
 else:
-    player_2 = randint(1, 3)    
+    player_2 = randint(1, 3)
 
 # Output the attack choices
 print(f"{attack_method(player_1)} ({player_name}) vs {attack_method(player_2)} ({opponent_name})")
