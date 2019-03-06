@@ -14,6 +14,19 @@ def attack_method(int):
     return switcher.get(int)
 
 
+# Repeat a string X times
+def repeat_to_length(str, multiplier):
+    return str * multiplier
+
+
+# Print a pretty message for the victor
+def output_victor(message, max_length, flourish_symbol="*"):
+    flourish_length = int((max_length - len(message)) / 2)
+    flourish = flourish_symbol * flourish_length
+    output = flourish + " " + message + " " + flourish
+    print(output[:max_length])
+
+
 # Define the script arguments
 parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
 parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
@@ -50,20 +63,26 @@ else:
     player_2 = randint(1, 3)
 
 # Output the attack choices
-print(f"{attack_method(player_1)} ({player_1_name}) vs {attack_method(player_2)} ({player_2_name})")
+attack_message = f"{attack_method(player_1)} ({player_1_name}) vs {attack_method(player_2)} ({player_2_name})"
+attack_message_length = len(attack_message)
+print(repeat_to_length("-", attack_message_length))
+print(attack_message)
+print(repeat_to_length("-", attack_message_length))
 
 # Output the attack outcome
 if player_1 == player_2:
-    print("DRAW!")
+    attack_outcome = "DRAW"
 elif player_1 == 1 and player_2 == 3:
-    print(f"{player_1_name} wins!")
+    attack_outcome = f"{player_1_name} wins!"
 elif player_1 == 1 and player_2 == 2:
-    print(f"{player_2_name} wins!")
+    attack_outcome = f"{player_2_name} wins!"
 elif player_1 == 2 and player_2 == 1:
-    print(f"{player_1_name} wins!")
+    attack_outcome = f"{player_1_name} wins!"
 elif player_1 == 2 and player_2 == 3:
-    print(f"{player_2_name} wins!")
+    attack_outcome = f"{player_2_name} wins!"
 elif player_1 == 3 and player_2 == 2:
-    print(f"{player_1_name} wins!")
+    attack_outcome = f"{player_1_name} wins!"
 elif player_1 == 3 and player_2 == 1:
-    print(f"{player_2_name} wins!")
+    attack_outcome = f"{player_2_name} wins!"
+
+output_victor(attack_outcome, attack_message_length)
