@@ -15,7 +15,7 @@ def attack_method(int):
 
 
 # Define the script arguments
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
 parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
 args = parser.parse_args()
 
