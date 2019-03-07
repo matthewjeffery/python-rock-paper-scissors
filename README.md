@@ -30,3 +30,12 @@ docker run -it rock-paper-scissors --plaintext
 ```
 docker run -it rock-paper-scissors -p
 ```
+
+## Scoring
+Feeling competitive? See how your skills stack up against the computer!
+```
+docker run -it rock-paper-scissors --score
+```
+```
+docker run -it rock-paper-scissors -s
+```
