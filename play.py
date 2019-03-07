@@ -5,12 +5,12 @@ import getpass
 from random import randint
 
 # Define global options
-divider_length = 43
+divider_length = 47
 
 # Define the game symbols
 symbol_rock = "👊"  # \U0001F44A
 symbol_paper = "🤚"  # \U0001F91A
-symbol_scissors = "✌️ "  # \U0000270C
+symbol_scissors = "✌️"  # \U0000270C
 
 
 # Get the readable attack method name and symbol
@@ -59,7 +59,7 @@ else:
 if args.plaintext:
     attack_input = "Rock (1), Paper (2), Scissors (3)? "
 else:
-    attack_input = f"{symbol_rock} Rock (1) {symbol_paper} Paper (2) {symbol_scissors} Scissors (3)? "
+    attack_input = f"{symbol_rock}  Rock (1)  {symbol_paper}  Paper (2)  {symbol_scissors}  Scissors (3)? "
 
 # Get player_1 attack choice and set name
 player_1 = ""
@@ -90,11 +90,11 @@ if args.plaintext:
     player_1_attack = f"{player_1_attack_name} ({player_1_name})"
     player_2_attack = f"{player_2_attack_name} ({player_2_name})"
 else:
-    player_1_attack = f"{player_1_attack_symbol} {player_1_attack_name} ({player_1_name})"
-    player_2_attack = f"{player_2_attack_symbol} {player_2_attack_name} ({player_2_name})"
+    player_1_attack = f"{player_1_attack_name}  {player_1_attack_symbol}  ({player_1_name})"
+    player_2_attack = f"{player_2_attack_name}  {player_2_attack_symbol}  ({player_2_name})"
 
 # Output the attack choices
-attack_message = f"{player_1_attack} vs {player_2_attack}"
+attack_message = f"{player_1_attack}  vs  {player_2_attack}"
 if args.plaintext:
     divider_length = len(attack_message)
 elif multiplayer:
