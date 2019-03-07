@@ -4,6 +4,9 @@ import argparse
 import getpass
 from random import randint
 
+# Define global options
+divider_length = 43
+
 # Define the game symbols
 symbol_rock = "👊"  # \U0001F44A
 symbol_paper = "🤚"  # \U0001F91A
@@ -92,10 +95,13 @@ else:
 
 # Output the attack choices
 attack_message = f"{player_1_attack} vs {player_2_attack}"
-attack_message_length = len(attack_message)
-print(repeat_to_length("-", attack_message_length))
+if args.plaintext:
+    divider_length = len(attack_message)
+elif multiplayer:
+    divider_length += 8
+print(repeat_to_length("-", divider_length))
 print(attack_message)
-print(repeat_to_length("-", attack_message_length))
+print(repeat_to_length("-", divider_length))
 
 # Output the attack outcome
 if player_1 == player_2:
@@ -113,4 +119,4 @@ elif player_1 == 3 and player_2 == 2:
 elif player_1 == 3 and player_2 == 1:
     attack_outcome = f"{player_2_name} wins!"
 
-output_victor(attack_outcome, attack_message_length)
+output_victor(attack_outcome, divider_length)
