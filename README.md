@@ -21,3 +21,12 @@ docker run -it rock-paper-scissors --multiplayer
 ```
 docker run -it rock-paper-scissors -m
 ```
+
+## Graphics
+Fancy playing old school? Remove the graphics by playing in plaintext mode!
+```
+docker run -it rock-paper-scissors --plaintext
+```
+```
+docker run -it rock-paper-scissors -p
+```
