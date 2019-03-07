@@ -4,15 +4,25 @@ import argparse
 import getpass
 from random import randint
 
+# Define the game symbols
+symbol_rock = "👊"  # \U0001F44A
+symbol_paper = "🤚"  # \U0001F91A
+symbol_scissors = "✌️ "  # \U0000270C
 
-# Get the readable attack method name
+
+# Get the readable attack method name and symbol
 def attack_method(int):
-    switcher = {
+    name = {
         1: "ROCK",
         2: "PAPER",
         3: "SCISSORS"
     }
-    return switcher.get(int)
+    symbol = {
+        1: symbol_rock,
+        2: symbol_paper,
+        3: symbol_scissors,
+    }
+    return name.get(int), symbol.get(int)
 
 
 # Repeat a string X times
@@ -31,6 +41,7 @@ def output_victor(message, max_length, flourish_symbol="*"):
 # Define the script arguments
 parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
 parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
+parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
 args = parser.parse_args()
 
 # Determine if that game will be multiplayer
@@ -42,7 +53,10 @@ else:
     player_2_name = "Computer"
 
 # Set the attack choices input
-attack_input = "Rock (1), Paper (2), Scissors (3)? "
+if args.plaintext:
+    attack_input = "Rock (1), Paper (2), Scissors (3)? "
+else:
+    attack_input = f"{symbol_rock} Rock (1) {symbol_paper} Paper (2) {symbol_scissors} Scissors (3)? "
 
 # Get player_1 attack choice and set name
 player_1 = ""
@@ -66,8 +80,18 @@ if multiplayer:
 else:
     player_2 = randint(1, 3)
 
+# Set the players attack choice message
+player_1_attack_name, player_1_attack_symbol = attack_method(player_1)
+player_2_attack_name, player_2_attack_symbol = attack_method(player_2)
+if args.plaintext:
+    player_1_attack = f"{player_1_attack_name} ({player_1_name})"
+    player_2_attack = f"{player_2_attack_name} ({player_2_name})"
+else:
+    player_1_attack = f"{player_1_attack_symbol} {player_1_attack_name} ({player_1_name})"
+    player_2_attack = f"{player_2_attack_symbol} {player_2_attack_name} ({player_2_name})"
+
 # Output the attack choices
-attack_message = f"{attack_method(player_1)} ({player_1_name}) vs {attack_method(player_2)} ({player_2_name})"
+attack_message = f"{player_1_attack} vs {player_2_attack}"
 attack_message_length = len(attack_message)
 print(repeat_to_length("-", attack_message_length))
 print(attack_message)
