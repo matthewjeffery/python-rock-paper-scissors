@@ -34,11 +34,11 @@ parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", 
 args = parser.parse_args()
 
 # Determine if that game will be multiplayer
-multiplayer = False
 if args.multiplayer:
     multiplayer = True
     player_2_name = "Player 2"
 else:
+    multiplayer = False
     player_2_name = "Computer"
 
 # Set the attack choices input
