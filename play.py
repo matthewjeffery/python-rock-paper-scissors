@@ -3,6 +3,7 @@
 import argparse
 import getpass
 from random import randint
+from tabulate import tabulate
 
 # Define global options
 score_path = "./score.txt"
@@ -68,11 +69,19 @@ if args.score:
             else:
                 loses += 1
             outcome = score_file.readline()
+    total_games = wins + loses + draws
 
     # Output scores
-    print("Wins: " + str(wins))
-    print("Loses: " + str(loses))
-    print("Draws: " + str(draws))
+    score_table_headers = [
+        "Wins",
+        "Loses",
+        "Draws",
+        "Total Games"
+    ]
+    score_table = [
+        [wins, loses, draws, total_games]
+    ]
+    print(tabulate(score_table, score_table_headers, tablefmt="psql"))
 
     # Force quit
     exit()
