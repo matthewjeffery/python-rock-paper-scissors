@@ -46,7 +46,36 @@ def output_victor(message, max_length, flourish_symbol="*"):
 parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
 parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
 parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
+parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
 args = parser.parse_args()
+
+# Display the player vs computer score
+if args.score:
+    # Counters
+    wins = 0
+    loses = 0
+    draws = 0
+
+    # Load scores
+    with open(score_path, "r") as score_file:
+        outcome = score_file.readline()
+        while outcome:
+            outcome = outcome.strip()
+            if outcome == "draw":
+                draws += 1
+            elif outcome == "player":
+                wins += 1
+            else:
+                loses += 1
+            outcome = score_file.readline()
+
+    # Output scores
+    print("Wins: " + str(wins))
+    print("Loses: " + str(loses))
+    print("Draws: " + str(draws))
+
+    # Force quit
+    exit()
 
 # Determine if that game will be multiplayer
 if args.multiplayer:
