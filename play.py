@@ -2,6 +2,7 @@
 
 import argparse
 import getpass
+import os
 from random import randint
 from tabulate import tabulate
 
@@ -58,17 +59,18 @@ if args.score:
     draws = 0
 
     # Load scores
-    with open(score_path, "r") as score_file:
-        outcome = score_file.readline()
-        while outcome:
-            outcome = outcome.strip()
-            if outcome == "draw":
-                draws += 1
-            elif outcome == "player":
-                wins += 1
-            else:
-                loses += 1
+    if os.path.isfile(score_path):
+        with open(score_path, "r") as score_file:
             outcome = score_file.readline()
+            while outcome:
+                outcome = outcome.strip()
+                if outcome == "draw":
+                    draws += 1
+                elif outcome == "player":
+                    wins += 1
+                else:
+                    loses += 1
+                outcome = score_file.readline()
     total_games = wins + loses + draws
 
     # Output scores
