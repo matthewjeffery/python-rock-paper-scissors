@@ -16,5 +16,8 @@ docker run -it rock-paper-scissors
 ## Multiplayer
 Fed up of losing to the computer? Challenge the person next to you!
 ```
+docker run -it rock-paper-scissors --multiplayer
+```
+```
 docker run -it rock-paper-scissors -m
 ```
