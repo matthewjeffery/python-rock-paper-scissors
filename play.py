@@ -5,6 +5,7 @@ import getpass
 from random import randint
 
 # Define global options
+score_path = "./score.txt"
 divider_length = 47
 
 # Define the game symbols
@@ -104,19 +105,37 @@ print(attack_message)
 print(repeat_to_length("-", divider_length))
 
 # Output the attack outcome
+round_is_draw = False
+player_1_wins = False
+
 if player_1 == player_2:
     attack_outcome = "DRAW"
+    round_is_draw = True
 elif player_1 == 1 and player_2 == 3:
     attack_outcome = f"{player_1_name} wins!"
+    player_1_wins = True
 elif player_1 == 1 and player_2 == 2:
     attack_outcome = f"{player_2_name} wins!"
 elif player_1 == 2 and player_2 == 1:
     attack_outcome = f"{player_1_name} wins!"
+    player_1_wins = True
 elif player_1 == 2 and player_2 == 3:
     attack_outcome = f"{player_2_name} wins!"
 elif player_1 == 3 and player_2 == 2:
     attack_outcome = f"{player_1_name} wins!"
+    player_1_wins = True
 elif player_1 == 3 and player_2 == 1:
     attack_outcome = f"{player_2_name} wins!"
 
 output_victor(attack_outcome, divider_length)
+
+# Write the output to the score text file
+if not multiplayer:
+    score_file = open(score_path, "a")
+    if round_is_draw:
+        score_file.write("draw")
+    elif player_1_wins:
+        score_file.write("player")
+    else:
+        score_file.write("computer")
+    score_file.write("\n")
