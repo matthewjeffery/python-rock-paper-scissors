@@ -16,6 +16,9 @@ Once the docker image has been successfully built, run the container:
 ```
 docker run -it rock-paper-scissors
 ```
+```
+docker-compose run app
+```
 
 ## Multiplayer
 Fed up of losing to the computer? Challenge the person next to you!
@@ -23,7 +26,7 @@ Fed up of losing to the computer? Challenge the person next to you!
 docker run -it rock-paper-scissors --multiplayer
 ```
 ```
-docker run -it rock-paper-scissors -m
+docker-compose run app --multiplayer
 ```
 
 ## Graphics
@@ -32,7 +35,7 @@ Fancy playing old school? Remove the graphics by playing in plaintext mode!
 docker run -it rock-paper-scissors --plaintext
 ```
 ```
-docker run -it rock-paper-scissors -p
+docker-compose run app --plaintext
 ```
 
 ## Scoring
@@ -41,7 +44,7 @@ Feeling competitive? See how your skills stack up against the computer!
 docker run -it rock-paper-scissors --score
 ```
 ```
-docker run -it rock-paper-scissors -s
+docker-compose run app --score
 ```
 
 ### Persistence
