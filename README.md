@@ -6,6 +6,10 @@ This python script is configured to run within a docker container. Execute the f
 ```
 docker build -t rock-paper-scissors .
 ```
+Alternatively, simplify things with `docker-compose`:
+```
+docker-compose build
+```
 
 ## Play time!
 Once the docker image has been successfully built, run the container:
@@ -38,4 +42,13 @@ docker run -it rock-paper-scissors --score
 ```
 ```
 docker run -it rock-paper-scissors -s
+```
+
+### Persistence
+When running the _rock-paper-scissors_ container via `docker` you will notice that without a _volume_ scores will never be tracked. This is due to the underlying way `docker` handles files. However, this can be avoided by initialising a volume at runtime or by using `docker-compose` which has a predefined volume configuration:
+```
+docker run -itv "$PWD":/rock-paper-scissors rock-paper-scissors
+```
+```
+docker-compose run app
 ```

@@ -1,7 +1,9 @@
 FROM python:3
 
-COPY play.py /
-
 RUN pip install tabulate
 
-ENTRYPOINT ["python", "./play.py"]
+COPY play.py /rock-paper-scissors/
+
+WORKDIR /rock-paper-scissors
+
+ENTRYPOINT ["python", "play.py"]
