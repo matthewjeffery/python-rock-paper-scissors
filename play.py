@@ -15,6 +15,7 @@ class RockPaperScissors(object):
     SYMBOL_ROCK = "👊"  # \U0001F44A
     SYMBOL_PAPER = "🤚"  # \U0001F91A
     SYMBOL_SCISSORS = "✌️"  # \U0000270C
+    SCORE_PATH = "./score.txt"
 
     def __init__(self, divider_length):
         super(RockPaperScissors, self).__init__()
@@ -27,7 +28,6 @@ class RockPaperScissors(object):
         self.player_2_name = "Computer"
         self.round_is_draw = False
         self.player_1_wins = False
-        self.score_path = "./score.txt"
         self.divider_length = divider_length
 
     def parse_args(self):
@@ -66,8 +66,8 @@ class RockPaperScissors(object):
 
     def load_scores(self):
         """Load scores"""
-        if os.path.isfile(self.score_path):
-            with open(self.score_path, "r") as score_file:
+        if os.path.isfile(self.SCORE_PATH):
+            with open(self.SCORE_PATH, "r") as score_file:
                 outcome = score_file.readline()
                 while outcome:
                     outcome = outcome.strip()
@@ -184,7 +184,7 @@ class RockPaperScissors(object):
     def write_output_to_score_file(self):
         """Write the output to the score text file"""
         if not self.args.multiplayer:
-            score_file = open(self.score_path, "a")
+            score_file = open(self.SCORE_PATH, "a")
             if self.round_is_draw:
                 score_file.write("draw")
             elif self.player_1_wins:
