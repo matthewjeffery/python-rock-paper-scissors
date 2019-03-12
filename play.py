@@ -52,9 +52,9 @@ class RockPaperScissors(object):
         }
         return name.get(int), symbol.get(int)
 
-    def repeat_to_length(self, str, multiplier):
+    def repeat_string(self, string, multiplier):
         """Repeat a string X times"""
-        return str * multiplier
+        return string * multiplier
 
     def output_victor(self, message, max_length, flourish_symbol="*"):
         """Print a pretty message for the victor"""
@@ -155,9 +155,9 @@ class RockPaperScissors(object):
             self.divider_length = len(attack_message)
         elif self.args.multiplayer:
             self.divider_length += 8
-        print(self.repeat_to_length("-", self.divider_length))
+        print(self.repeat_string("-", self.divider_length))
         print(attack_message)
-        print(self.repeat_to_length("-", self.divider_length))
+        print(self.repeat_string("-", self.divider_length))
 
     def output_attack_outcome(self):
         """Output the attack outcome"""
