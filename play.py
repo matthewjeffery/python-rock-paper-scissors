@@ -9,13 +9,12 @@ from tabulate import tabulate
 # Define global options
 divider_length = 48
 
-# Define the game symbols
-SYMBOL_ROCK = "👊"  # \U0001F44A
-SYMBOL_PAPER = "🤚"  # \U0001F91A
-SYMBOL_SCISSORS = "✌️"  # \U0000270C
-
 
 class RockPaperScissors(object):
+    # Define the game constants
+    SYMBOL_ROCK = "👊"  # \U0001F44A
+    SYMBOL_PAPER = "🤚"  # \U0001F91A
+    SYMBOL_SCISSORS = "✌️"  # \U0000270C
 
     def __init__(self, divider_length):
         super(RockPaperScissors, self).__init__()
@@ -47,9 +46,9 @@ class RockPaperScissors(object):
             3: "SCISSORS"
         }
         symbol = {
-            1: SYMBOL_ROCK,
-            2: SYMBOL_PAPER,
-            3: SYMBOL_SCISSORS,
+            1: self.SYMBOL_ROCK,
+            2: self.SYMBOL_PAPER,
+            3: self.SYMBOL_SCISSORS,
         }
         return name.get(int), symbol.get(int)
 
@@ -114,7 +113,7 @@ class RockPaperScissors(object):
         if self.args.plaintext:
             self.attack_input = "Rock (1), Paper (2), Scissors (3)? "
         else:
-            self.attack_input = f"{SYMBOL_ROCK}  Rock (1)  {SYMBOL_PAPER}  Paper (2)  {SYMBOL_SCISSORS}  Scissors (3)? "
+            self.attack_input = f"{self.SYMBOL_ROCK}  Rock (1)  {self.SYMBOL_PAPER}  Paper (2)  {self.SYMBOL_SCISSORS}  Scissors (3)? "
 
     def get_attack_choice(self):
         """Get the player/s attack choice and set name"""
