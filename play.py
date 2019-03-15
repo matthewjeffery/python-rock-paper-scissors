@@ -5,6 +5,8 @@ import getpass
 import os
 from random import randint
 from tabulate import tabulate
+tabulate.PRESERVE_WHITESPACE = True
+tabulate.WIDE_CHARS_MODE = True
 
 # Define global options
 divider_length = 48
@@ -150,14 +152,30 @@ class RockPaperScissors(object):
 
     def output_attack_message(self):
         """Output the attack choices"""
-        attack_message = f"{self.player_1_attack}  vs  {self.player_2_attack}"
         if self.args.plaintext:
-            self.divider_length = len(attack_message)
-        elif self.args.multiplayer:
-            self.divider_length += 8
-        print(self.repeat_string("-", self.divider_length))
-        print(attack_message)
-        print(self.repeat_string("-", self.divider_length))
+            player_1_attack_message = self.player_1_attack_name
+            player_2_attack_message = self.player_2_attack_name
+        else:
+            player_1_attack_message = self.player_1_attack_symbol + "  " + self.player_1_attack_name
+            player_2_attack_message = self.player_2_attack_symbol + "  " + self.player_2_attack_name
+
+        attack_table_headers = [
+            f"     {self.player_1_name}     ",
+            "vs",
+            f"     {self.player_2_name}     "
+        ]
+        attack_table = [
+            [
+                player_1_attack_message,
+                "",
+                player_2_attack_message
+            ]
+        ]
+        output = tabulate(attack_table, attack_table_headers, tablefmt="simple", colalign=("center", "center", "center"))
+
+        print("\n")
+        print(output)
+        print("\n")
 
     def output_attack_outcome(self):
         """Output the attack outcome"""
