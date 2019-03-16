@@ -8,9 +8,6 @@ from tabulate import tabulate
 tabulate.PRESERVE_WHITESPACE = True
 tabulate.WIDE_CHARS_MODE = True
 
-# Define global options
-divider_length = 48
-
 
 class RockPaperScissors(object):
     # Define the game constants
@@ -19,7 +16,7 @@ class RockPaperScissors(object):
     SYMBOL_SCISSORS = "✌️"  # \U0000270C
     SCORE_PATH = "./score.txt"
 
-    def __init__(self, divider_length):
+    def __init__(self):
         super(RockPaperScissors, self).__init__()
         self.wins = 0
         self.draws = 0
@@ -30,7 +27,6 @@ class RockPaperScissors(object):
         self.player_2_name = "Computer"
         self.round_is_draw = False
         self.player_1_wins = False
-        self.divider_length = divider_length
 
     def parse_args(self):
         """Define the script arguments"""
@@ -58,12 +54,11 @@ class RockPaperScissors(object):
         """Repeat a string X times"""
         return string * multiplier
 
-    def output_victor(self, message, max_length, flourish_symbol="*"):
+    def output_victor(self, message):
         """Print a pretty message for the victor"""
-        flourish_length = int((max_length - len(message)) / 2)
-        flourish = flourish_symbol * flourish_length
-        output = flourish + " " + message + " " + flourish
-        print(output[:max_length])
+        width = self.repeat_string(" ", self.attack_table_headers_length)
+        output = tabulate([[message]], [width], tablefmt="simple", colalign=("center",))
+        print(output)
         print("\n")
 
     def load_scores(self):
@@ -175,7 +170,13 @@ class RockPaperScissors(object):
 
         print("\n")
         print(output)
-        print("\n")
+
+        table_length_offset = 8
+        attack_table_headers_length = 0
+        for header in attack_table_headers:
+            attack_table_headers_length += len(header)
+
+        self.attack_table_headers_length = attack_table_headers_length + table_length_offset
 
     def output_attack_outcome(self):
         """Output the attack outcome"""
@@ -197,7 +198,7 @@ class RockPaperScissors(object):
             self.player_1_wins = True
         elif self.player_1 == 3 and self.player_2 == 1:
             attack_outcome = f"{self.player_2_name} wins!"
-        self.output_victor(attack_outcome, self.divider_length)
+        self.output_victor(attack_outcome)
 
     def write_output_to_score_file(self):
         """Write the output to the score text file"""
@@ -233,5 +234,5 @@ class RockPaperScissors(object):
 
 
 # Start Game
-game = RockPaperScissors(divider_length)
+game = RockPaperScissors()
 game.start()
