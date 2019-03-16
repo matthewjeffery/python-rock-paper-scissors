@@ -5,6 +5,8 @@ import getpass
 import os
 from random import randint
 from tabulate import tabulate
+import time
+
 tabulate.PRESERVE_WHITESPACE = True
 tabulate.WIDE_CHARS_MODE = True
 
@@ -228,6 +230,7 @@ class RockPaperScissors(object):
                 self.output_attack_message()
                 self.output_attack_outcome()
                 self.write_output_to_score_file()
+                time.sleep(0.75)
             except KeyboardInterrupt:
                 print("\n")
                 exit()
