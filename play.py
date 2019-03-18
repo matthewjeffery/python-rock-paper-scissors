@@ -28,6 +28,7 @@ class RockPaperScissors(object):
         self.player_2_name = "Computer"
         self.round_is_draw = False
         self.player_1_wins = False
+        self.displayed_table_width = 0
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
