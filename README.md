@@ -17,7 +17,7 @@ Once the docker image has been successfully built, run the container:
 docker run -it rock-paper-scissors
 ```
 ```
-docker-compose run app
+docker-compose run game
 ```
 
 ## Multiplayer
@@ -26,7 +26,7 @@ Fed up of losing to the computer? Challenge the person next to you!
 docker run -it rock-paper-scissors --multiplayer
 ```
 ```
-docker-compose run app --multiplayer
+docker-compose run game --multiplayer
 ```
 
 ## Graphics
@@ -35,7 +35,7 @@ Fancy playing old school? Remove the graphics by playing in plaintext mode!
 docker run -it rock-paper-scissors --plaintext
 ```
 ```
-docker-compose run app --plaintext
+docker-compose run game --plaintext
 ```
 
 ## Scoring
@@ -44,7 +44,7 @@ Feeling competitive? See how your skills stack up against the computer!
 docker run -it rock-paper-scissors --score
 ```
 ```
-docker-compose run app --score
+docker-compose run game --score
 ```
 
 ### Persistence
@@ -53,5 +53,5 @@ When running the _rock-paper-scissors_ container via `docker` you will notice th
 docker run -itv "$PWD":/rock-paper-scissors rock-paper-scissors
 ```
 ```
-docker-compose run app
+docker-compose run game
 ```
