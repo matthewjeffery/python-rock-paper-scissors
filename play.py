@@ -195,9 +195,7 @@ class RockPaperScissors(object):
 
     def start(self):
         self.parse_args()
-
         self.check_score()
-
         self.check_multiplayer()
 
         while(True):
