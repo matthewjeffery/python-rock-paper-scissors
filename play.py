@@ -49,12 +49,12 @@ class RockPaperScissors(object):
 
     def check_score(self):
         if self.args.score:
-            self.display_score()
+            self.display_score_table()
             print("\n")
             self.display_score_chart()
             exit()
 
-    def display_score(self):
+    def display_score_table(self):
         if os.path.isfile(self.SCORE_PATH):
             with open(self.SCORE_PATH, "r") as score_file:
                 outcome = score_file.readline()
