@@ -38,33 +38,26 @@ class RockPaperScissors(object):
         parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
         self.args = parser.parse_args()
 
-    def attack_method(self, int):
-        """Get the readable attack method name and symbol"""
-        name = {
-            1: "ROCK",
-            2: "PAPER",
-            3: "SCISSORS"
-        }
-        symbol = {
-            1: self.SYMBOL_ROCK,
-            2: self.SYMBOL_PAPER,
-            3: self.SYMBOL_SCISSORS,
-        }
-        return name.get(int), symbol.get(int)
-
     def repeat_string(self, string, multiplier):
         """Repeat a string X times"""
         return string * multiplier
 
-    def output_victor(self, message):
-        """Print a pretty message for the victor"""
-        width = self.repeat_string(" ", self.attack_table_headers_length)
-        output = tabulate([[message]], [width], tablefmt="simple", colalign=("center",))
-        print(output)
-        print("\n")
+    def check_multiplayer(self):
+        """Determine if that game will be multiplayer"""
+        if self.args.multiplayer:
+            self.player_1_name = "Player 1"
+            self.player_2_name = "Player 2"
+        else:
+            self.player_1_name = "Player"
 
-    def load_scores(self):
-        """Load scores"""
+    def check_score(self):
+        """Determine if the score should be displayed"""
+        if self.args.score:
+            self.display_score()
+            exit()
+
+    def display_score(self):
+        """Display the player vs computer score"""
         if os.path.isfile(self.SCORE_PATH):
             with open(self.SCORE_PATH, "r") as score_file:
                 outcome = score_file.readline()
@@ -77,11 +70,9 @@ class RockPaperScissors(object):
                     else:
                         self.loses += 1
                     outcome = score_file.readline()
+
         self.total_games = self.wins + self.loses + self.draws
 
-    def display_score(self):
-        """Display the player vs computer score"""
-        self.load_scores()
         score_table_headers = [
             "Wins",
             "Loses",
@@ -89,33 +80,40 @@ class RockPaperScissors(object):
             "Total Games"
         ]
         score_table = [
-            [self.wins, self.loses, self.draws, self.total_games]
+            [
+                self.wins,
+                self.loses,
+                self.draws,
+                self.total_games
+            ]
         ]
         print(tabulate(score_table, score_table_headers, tablefmt="psql"))
 
-    def check_score(self):
-        """Determine if the score should be displayed"""
-        if self.args.score:
-            self.display_score()
-            exit()
+    def get_attack_method(self, choice: int):
+        """Get the readable attack method name and symbol"""
+        name = {
+            1: "ROCK",
+            2: "PAPER",
+            3: "SCISSORS"
+        }
+        symbol = {
+            1: self.SYMBOL_ROCK,
+            2: self.SYMBOL_PAPER,
+            3: self.SYMBOL_SCISSORS,
+        }
+        return name.get(choice), symbol.get(choice)
 
-    def check_multiplayer(self):
-        """Determine if that game will be multiplayer"""
-        if self.args.multiplayer:
-            self.player_1_name = "Player 1"
-            self.player_2_name = "Player 2"
-        else:
-            self.player_1_name = "Player"
-
-    def display_attack_choices(self):
+    def set_attack_input_message(self):
         """Set the attack choices input"""
         if self.args.plaintext:
             self.attack_input = "Rock (1), Paper (2), Scissors (3)? "
         else:
             self.attack_input = f"{self.SYMBOL_ROCK}  Rock (1)  {self.SYMBOL_PAPER}  Paper (2)  {self.SYMBOL_SCISSORS}  Scissors (3)? "
 
-    def get_attack_choice(self):
+    def set_attack_choice(self):
         """Get the player/s attack choice and set name"""
+        self.set_attack_input_message()
+
         # Get self.player_1 attack choice and set name
         self.player_1 = ""
         while self.player_1 not in [1, 2, 3]:
@@ -136,19 +134,11 @@ class RockPaperScissors(object):
         else:
             self.player_2 = randint(1, 3)
 
-    def set_attack_choice_message(self):
-        """Set the players attack choice message"""
-        self.player_1_attack_name, self.player_1_attack_symbol = self.attack_method(self.player_1)
-        self.player_2_attack_name, self.player_2_attack_symbol = self.attack_method(self.player_2)
-        if self.args.plaintext:
-            self.player_1_attack = f"{self.player_1_attack_name} ({self.player_1_name})"
-            self.player_2_attack = f"{self.player_2_attack_name} ({self.player_2_name})"
-        else:
-            self.player_1_attack = f"{self.player_1_attack_name}  {self.player_1_attack_symbol}  ({self.player_1_name})"
-            self.player_2_attack = f"{self.player_2_attack_name}  {self.player_2_attack_symbol}  ({self.player_2_name})"
-
-    def output_attack_message(self):
+    def display_attack_choice(self):
         """Output the attack choices"""
+        self.player_1_attack_name, self.player_1_attack_symbol = self.get_attack_method(self.player_1)
+        self.player_2_attack_name, self.player_2_attack_symbol = self.get_attack_method(self.player_2)
+
         if self.args.plaintext:
             player_1_attack_message = self.player_1_attack_name
             player_2_attack_message = self.player_2_attack_name
@@ -168,19 +158,17 @@ class RockPaperScissors(object):
                 player_2_attack_message
             ]
         ]
-        output = tabulate(attack_table, attack_table_headers, tablefmt="simple", colalign=("center", "center", "center"))
 
         print("\n")
-        print(output)
+        print(tabulate(attack_table, attack_table_headers, tablefmt="simple", colalign=("center", "center", "center")))
 
         table_length_offset = 8
         attack_table_headers_length = 0
         for header in attack_table_headers:
             attack_table_headers_length += len(header)
+        self.displayed_table_width = attack_table_headers_length + table_length_offset
 
-        self.attack_table_headers_length = attack_table_headers_length + table_length_offset
-
-    def output_attack_outcome(self):
+    def display_attack_outcome(self):
         """Output the attack outcome"""
         if self.player_1 == self.player_2:
             attack_outcome = "DRAW"
@@ -200,10 +188,13 @@ class RockPaperScissors(object):
             self.player_1_wins = True
         elif self.player_1 == 3 and self.player_2 == 1:
             attack_outcome = f"{self.player_2_name} wins!"
-        self.output_victor(attack_outcome)
 
-    def write_output_to_score_file(self):
-        """Write the output to the score text file"""
+        width = self.repeat_string(" ", self.displayed_table_width)
+        print(tabulate([[attack_outcome]], [width], tablefmt="simple", colalign=("center",)))
+        print("\n")
+
+    def write_outcome_to_score_file(self):
+        """Write the attack outcome to the score text file"""
         if not self.args.multiplayer:
             score_file = open(self.SCORE_PATH, "a")
             if self.round_is_draw:
@@ -224,12 +215,10 @@ class RockPaperScissors(object):
 
         while(True):
             try:
-                self.display_attack_choices()
-                self.get_attack_choice()
-                self.set_attack_choice_message()
-                self.output_attack_message()
-                self.output_attack_outcome()
-                self.write_output_to_score_file()
+                self.set_attack_choice()
+                self.display_attack_choice()
+                self.display_attack_outcome()
+                self.write_outcome_to_score_file()
                 time.sleep(0.75)
             except KeyboardInterrupt:
                 print("\n")
