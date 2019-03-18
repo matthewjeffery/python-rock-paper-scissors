@@ -5,177 +5,212 @@ import getpass
 import os
 from random import randint
 from tabulate import tabulate
+import time
 
-# Define global options
-score_path = "./score.txt"
-divider_length = 47
-
-# Define the game symbols
-symbol_rock = "👊"  # \U0001F44A
-symbol_paper = "🤚"  # \U0001F91A
-symbol_scissors = "✌️"  # \U0000270C
+tabulate.PRESERVE_WHITESPACE = True
+tabulate.WIDE_CHARS_MODE = True
 
 
-# Get the readable attack method name and symbol
-def attack_method(int):
-    name = {
-        1: "ROCK",
-        2: "PAPER",
-        3: "SCISSORS"
-    }
-    symbol = {
-        1: symbol_rock,
-        2: symbol_paper,
-        3: symbol_scissors,
-    }
-    return name.get(int), symbol.get(int)
+class RockPaperScissors(object):
+    SYMBOL_ROCK = "👊"  # \U0001F44A
+    SYMBOL_PAPER = "🤚"  # \U0001F91A
+    SYMBOL_SCISSORS = "✌️"  # \U0000270C
+    SCORE_PATH = "./score.txt"
 
+    def __init__(self):
+        super(RockPaperScissors, self).__init__()
+        self.wins = 0
+        self.draws = 0
+        self.loses = 0
+        self.player_1 = ""
+        self.player_1_name = "Player"
+        self.player_2 = ""
+        self.player_2_name = "Computer"
+        self.round_is_draw = False
+        self.player_1_wins = False
+        self.displayed_table_width = 0
 
-# Repeat a string X times
-def repeat_to_length(str, multiplier):
-    return str * multiplier
+    def parse_args(self):
+        parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
+        parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
+        parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
+        parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
+        self.args = parser.parse_args()
 
+    def repeat_string(self, string, multiplier):
+        return string * multiplier
 
-# Print a pretty message for the victor
-def output_victor(message, max_length, flourish_symbol="*"):
-    flourish_length = int((max_length - len(message)) / 2)
-    flourish = flourish_symbol * flourish_length
-    output = flourish + " " + message + " " + flourish
-    print(output[:max_length])
+    def check_multiplayer(self):
+        if self.args.multiplayer:
+            self.player_1_name = "Player 1"
+            self.player_2_name = "Player 2"
+        else:
+            self.player_1_name = "Player"
 
+    def check_score(self):
+        if self.args.score:
+            self.display_score()
+            exit()
 
-# Define the script arguments
-parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
-parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
-parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
-parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
-args = parser.parse_args()
-
-# Display the player vs computer score
-if args.score:
-    # Counters
-    wins = 0
-    loses = 0
-    draws = 0
-
-    # Load scores
-    if os.path.isfile(score_path):
-        with open(score_path, "r") as score_file:
-            outcome = score_file.readline()
-            while outcome:
-                outcome = outcome.strip()
-                if outcome == "draw":
-                    draws += 1
-                elif outcome == "player":
-                    wins += 1
-                else:
-                    loses += 1
+    def display_score(self):
+        if os.path.isfile(self.SCORE_PATH):
+            with open(self.SCORE_PATH, "r") as score_file:
                 outcome = score_file.readline()
-    total_games = wins + loses + draws
+                while outcome:
+                    outcome = outcome.strip()
+                    if outcome == "draw":
+                        self.draws += 1
+                    elif outcome == "player":
+                        self.wins += 1
+                    else:
+                        self.loses += 1
+                    outcome = score_file.readline()
 
-    # Output scores
-    score_table_headers = [
-        "Wins",
-        "Loses",
-        "Draws",
-        "Total Games"
-    ]
-    score_table = [
-        [wins, loses, draws, total_games]
-    ]
-    print(tabulate(score_table, score_table_headers, tablefmt="psql"))
+        self.total_games = self.wins + self.loses + self.draws
 
-    # Force quit
-    exit()
+        score_table_headers = [
+            "Wins",
+            "Loses",
+            "Draws",
+            "Total Games"
+        ]
+        score_table = [
+            [
+                self.wins,
+                self.loses,
+                self.draws,
+                self.total_games
+            ]
+        ]
+        print(tabulate(score_table, score_table_headers, tablefmt="psql"))
 
-# Determine if that game will be multiplayer
-if args.multiplayer:
-    multiplayer = True
-    player_2_name = "Player 2"
-else:
-    multiplayer = False
-    player_2_name = "Computer"
+    def get_attack_method(self, choice: int):
+        name = {
+            1: "ROCK",
+            2: "PAPER",
+            3: "SCISSORS"
+        }
+        symbol = {
+            1: self.SYMBOL_ROCK,
+            2: self.SYMBOL_PAPER,
+            3: self.SYMBOL_SCISSORS,
+        }
+        return name.get(choice), symbol.get(choice)
 
-# Set the attack choices input
-if args.plaintext:
-    attack_input = "Rock (1), Paper (2), Scissors (3)? "
-else:
-    attack_input = f"{symbol_rock}  Rock (1)  {symbol_paper}  Paper (2)  {symbol_scissors}  Scissors (3)? "
+    def set_attack_input_message(self):
+        if self.args.plaintext:
+            self.attack_input = "Rock (1), Paper (2), Scissors (3)? "
+        else:
+            self.attack_input = f"{self.SYMBOL_ROCK}  Rock (1)  {self.SYMBOL_PAPER}  Paper (2)  {self.SYMBOL_SCISSORS}  Scissors (3)? "
 
-# Get player_1 attack choice and set name
-player_1 = ""
-while player_1 not in [1, 2, 3]:
-    if multiplayer:
-        player_1_name = "Player 1"
-        player_1 = getpass.getpass(player_1_name + ": " + attack_input)
-    else:
-        player_1_name = "Player"
-        player_1 = input(attack_input)
-    if player_1.isnumeric():
-        player_1 = int(player_1)
+    def set_attack_choice(self):
+        self.set_attack_input_message()
 
-# Get player_2 attack choice
-if multiplayer:
-    player_2 = ""
-    while player_2 not in [1, 2, 3]:
-        player_2 = getpass.getpass(player_2_name + ": " + attack_input)
-        if player_2.isnumeric():
-            player_2 = int(player_2)
-else:
-    player_2 = randint(1, 3)
+        # Get self.player_1 attack choice and set name
+        self.player_1 = ""
+        while self.player_1 not in [1, 2, 3]:
+            if self.args.multiplayer:
+                self.player_1 = getpass.getpass(self.player_1_name + ":  " + self.attack_input)
+            else:
+                self.player_1 = input(self.attack_input)
+            if self.player_1.isnumeric():
+                self.player_1 = int(self.player_1)
 
-# Set the players attack choice message
-player_1_attack_name, player_1_attack_symbol = attack_method(player_1)
-player_2_attack_name, player_2_attack_symbol = attack_method(player_2)
-if args.plaintext:
-    player_1_attack = f"{player_1_attack_name} ({player_1_name})"
-    player_2_attack = f"{player_2_attack_name} ({player_2_name})"
-else:
-    player_1_attack = f"{player_1_attack_name}  {player_1_attack_symbol}  ({player_1_name})"
-    player_2_attack = f"{player_2_attack_name}  {player_2_attack_symbol}  ({player_2_name})"
+        # Get self.player_2 attack choice
+        if self.args.multiplayer:
+            self.player_2 = ""
+            while self.player_2 not in [1, 2, 3]:
+                self.player_2 = getpass.getpass(self.player_2_name + ":  " + self.attack_input)
+                if self.player_2.isnumeric():
+                    self.player_2 = int(self.player_2)
+        else:
+            self.player_2 = randint(1, 3)
 
-# Output the attack choices
-attack_message = f"{player_1_attack}  vs  {player_2_attack}"
-if args.plaintext:
-    divider_length = len(attack_message)
-elif multiplayer:
-    divider_length += 8
-print(repeat_to_length("-", divider_length))
-print(attack_message)
-print(repeat_to_length("-", divider_length))
+    def display_attack_choice(self):
+        self.player_1_attack_name, self.player_1_attack_symbol = self.get_attack_method(self.player_1)
+        self.player_2_attack_name, self.player_2_attack_symbol = self.get_attack_method(self.player_2)
 
-# Output the attack outcome
-round_is_draw = False
-player_1_wins = False
+        if self.args.plaintext:
+            player_1_attack_message = self.player_1_attack_name
+            player_2_attack_message = self.player_2_attack_name
+        else:
+            player_1_attack_message = self.player_1_attack_symbol + "  " + self.player_1_attack_name
+            player_2_attack_message = self.player_2_attack_symbol + "  " + self.player_2_attack_name
 
-if player_1 == player_2:
-    attack_outcome = "DRAW"
-    round_is_draw = True
-elif player_1 == 1 and player_2 == 3:
-    attack_outcome = f"{player_1_name} wins!"
-    player_1_wins = True
-elif player_1 == 1 and player_2 == 2:
-    attack_outcome = f"{player_2_name} wins!"
-elif player_1 == 2 and player_2 == 1:
-    attack_outcome = f"{player_1_name} wins!"
-    player_1_wins = True
-elif player_1 == 2 and player_2 == 3:
-    attack_outcome = f"{player_2_name} wins!"
-elif player_1 == 3 and player_2 == 2:
-    attack_outcome = f"{player_1_name} wins!"
-    player_1_wins = True
-elif player_1 == 3 and player_2 == 1:
-    attack_outcome = f"{player_2_name} wins!"
+        attack_table_headers = [
+            f"     {self.player_1_name}     ",
+            "vs",
+            f"     {self.player_2_name}     "
+        ]
+        attack_table = [
+            [
+                player_1_attack_message,
+                "",
+                player_2_attack_message
+            ]
+        ]
 
-output_victor(attack_outcome, divider_length)
+        print("\n")
+        print(tabulate(attack_table, attack_table_headers, tablefmt="simple", colalign=("center", "center", "center")))
 
-# Write the output to the score text file
-if not multiplayer:
-    score_file = open(score_path, "a")
-    if round_is_draw:
-        score_file.write("draw")
-    elif player_1_wins:
-        score_file.write("player")
-    else:
-        score_file.write("computer")
-    score_file.write("\n")
+        table_length_offset = 8
+        attack_table_headers_length = 0
+        for header in attack_table_headers:
+            attack_table_headers_length += len(header)
+        self.displayed_table_width = attack_table_headers_length + table_length_offset
+
+    def display_attack_outcome(self):
+        if self.player_1 == self.player_2:
+            attack_outcome = "DRAW"
+            self.round_is_draw = True
+        elif self.player_1 == 1 and self.player_2 == 3:
+            attack_outcome = f"{self.player_1_name} wins!"
+            self.player_1_wins = True
+        elif self.player_1 == 1 and self.player_2 == 2:
+            attack_outcome = f"{self.player_2_name} wins!"
+        elif self.player_1 == 2 and self.player_2 == 1:
+            attack_outcome = f"{self.player_1_name} wins!"
+            self.player_1_wins = True
+        elif self.player_1 == 2 and self.player_2 == 3:
+            attack_outcome = f"{self.player_2_name} wins!"
+        elif self.player_1 == 3 and self.player_2 == 2:
+            attack_outcome = f"{self.player_1_name} wins!"
+            self.player_1_wins = True
+        elif self.player_1 == 3 and self.player_2 == 1:
+            attack_outcome = f"{self.player_2_name} wins!"
+
+        width = self.repeat_string(" ", self.displayed_table_width)
+        print(tabulate([[attack_outcome]], [width], tablefmt="simple", colalign=("center",)))
+        print("\n")
+
+    def write_outcome_to_score_file(self):
+        if not self.args.multiplayer:
+            score_file = open(self.SCORE_PATH, "a")
+            if self.round_is_draw:
+                score_file.write("draw")
+            elif self.player_1_wins:
+                score_file.write("player")
+            else:
+                score_file.write("computer")
+            score_file.write("\n")
+
+    def start(self):
+        self.parse_args()
+        self.check_score()
+        self.check_multiplayer()
+
+        while(True):
+            try:
+                self.set_attack_choice()
+                self.display_attack_choice()
+                self.display_attack_outcome()
+                self.write_outcome_to_score_file()
+                time.sleep(0.75)
+            except KeyboardInterrupt:
+                print("\n")
+                exit()
+
+
+# Start Game
+game = RockPaperScissors()
+game.start()
