@@ -7,3 +7,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - $PWD:/rock-paper-scissors
+    environment:
+      - GUI_ENABLED=false
