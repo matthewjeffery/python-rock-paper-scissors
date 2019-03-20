@@ -55,3 +55,21 @@ docker run -itv "$PWD":/rock-paper-scissors rock-paper-scissors
 ```
 docker-compose run game
 ```
+
+## Running Natively
+Prefer playing games natively? Execute the following via the command line:
+```
+./play.py
+```
+
+### Requirements
+To run the game natively the following dependencies must be installed:
+- [Python 3](https://www.python.org/downloads/)
+- [Tabulate](https://pypi.org/project/tabulate/)
+- [Tkinter](https://tkdocs.com/tutorial/install.html)
+
+### Graphical Interface
+Play with a graphical interface by adding the `--gui` option flag during execution.
+```
+./play.py --gui
+```

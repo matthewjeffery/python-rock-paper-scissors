@@ -10,6 +10,12 @@ import time
 tabulate.PRESERVE_WHITESPACE = True
 tabulate.WIDE_CHARS_MODE = True
 
+if os.getenv('GUI_ENABLED') not in ["false", "False", "FALSE", "n", "N", "no", "No", "NO", "off", "Off", "OFF"]:
+    GUI_ENABLED = True
+    import tkinter as tk
+else:
+    GUI_ENABLED = False
+
 
 class RockPaperScissors(object):
     SYMBOL_ROCK = "👊"  # \U0001F44A
@@ -35,6 +41,8 @@ class RockPaperScissors(object):
         parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
         parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
         parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
+        if GUI_ENABLED:
+            parser.add_argument("-g", "--gui", help="display a GUI for single player mode", action="store_true")
         self.args = parser.parse_args()
 
     def repeat_string(self, string, multiplier):
@@ -138,11 +146,11 @@ class RockPaperScissors(object):
         else:
             self.attack_input = f"{self.SYMBOL_ROCK}  Rock (1)  {self.SYMBOL_PAPER}  Paper (2)  {self.SYMBOL_SCISSORS}  Scissors (3)? "
 
-    def set_attack_choice(self):
+    def set_attack_choice(self, player_1_choice="", player_2_choice=""):
         self.set_attack_input_message()
 
         # Get self.player_1 attack choice and set name
-        self.player_1 = ""
+        self.player_1 = player_1_choice
         while self.player_1 not in [1, 2, 3]:
             if self.args.multiplayer:
                 self.player_1 = getpass.getpass(self.player_1_name + ":  " + self.attack_input)
@@ -153,7 +161,7 @@ class RockPaperScissors(object):
 
         # Get self.player_2 attack choice
         if self.args.multiplayer:
-            self.player_2 = ""
+            self.player_2 = player_2_choice
             while self.player_2 not in [1, 2, 3]:
                 self.player_2 = getpass.getpass(self.player_2_name + ":  " + self.attack_input)
                 if self.player_2.isnumeric():
@@ -229,18 +237,51 @@ class RockPaperScissors(object):
                 score_file.write("computer")
             score_file.write("\n")
 
+    def check_gui(self):
+        if GUI_ENABLED and self.args.gui and not self.args.multiplayer:
+            self.set_attack_input_message()
+            print(self.attack_input)
+            self.use_gui()
+
+    def use_gui(self):
+        window = tk.Tk()
+        window.title("Attack Method")
+        window.protocol('WM_DELETE_WINDOW', exit)
+
+        frame = tk.Frame(window)
+        frame.pack(fill="both", expand=True)
+
+        button_rock = tk.Button(frame, text="Rock", width=10, command=lambda: self.handle_gui_attack(1))
+        button_rock.pack(side=tk.LEFT, padx=5, pady=5)
+
+        button_paper = tk.Button(frame, text="Paper", width=10, command=lambda: self.handle_gui_attack(2))
+        button_paper.pack(side=tk.LEFT, padx=0, pady=5)
+
+        button_scissors = tk.Button(frame, text="Scissors", width=10, command=lambda: self.handle_gui_attack(3))
+        button_scissors.pack(side=tk.LEFT, padx=5, pady=5)
+
+        window.mainloop()
+
+    def handle_gui_attack(self, choice):
+        self.handle_attack(choice)
+        print(self.attack_input)
+
+    def handle_attack(self, player_1_choice="", player_2_choice="", interval=0.75):
+        self.set_attack_choice(player_1_choice, player_2_choice)
+        self.display_attack_choice()
+        self.display_attack_outcome()
+        self.write_outcome_to_score_file()
+        time.sleep(interval)
+
     def start(self):
         self.parse_args()
         self.check_score()
         self.check_multiplayer()
+        self.check_gui()
 
         while(True):
             try:
-                self.set_attack_choice()
-                self.display_attack_choice()
-                self.display_attack_outcome()
-                self.write_outcome_to_score_file()
-                time.sleep(0.75)
+                self.handle_attack()
             except KeyboardInterrupt:
                 print("\n")
                 exit()
