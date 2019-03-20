@@ -6,10 +6,15 @@ import os
 from random import randint
 from tabulate import tabulate
 import time
-import tkinter as tk
 
 tabulate.PRESERVE_WHITESPACE = True
 tabulate.WIDE_CHARS_MODE = True
+
+if os.getenv('GUI_ENABLED') not in ["false", "False", "FALSE", "n", "N", "no", "No", "NO", "off", "Off", "OFF"]:
+    GUI_ENABLED = True
+    import tkinter as tk
+else:
+    GUI_ENABLED = False
 
 
 class RockPaperScissors(object):
@@ -36,7 +41,8 @@ class RockPaperScissors(object):
         parser.add_argument("-m", "--multiplayer", help="play the game with 2 players", action="store_true")
         parser.add_argument("-p", "--plaintext", help="play the game in plaintext mode", action="store_true")
         parser.add_argument("-s", "--score", help="display the total score against the computer", action="store_true")
-        parser.add_argument("--gui", help="display a GUI for single player games", action="store_true")
+        if GUI_ENABLED:
+            parser.add_argument("-g", "--gui", help="display a GUI for single player mode", action="store_true")
         self.args = parser.parse_args()
 
     def repeat_string(self, string, multiplier):
@@ -232,7 +238,7 @@ class RockPaperScissors(object):
             score_file.write("\n")
 
     def check_gui(self):
-        if self.args.gui and not self.args.multiplayer:
+        if GUI_ENABLED and self.args.gui and not self.args.multiplayer:
             self.set_attack_input_message()
             print(self.attack_input)
             self.use_gui()
