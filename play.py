@@ -102,7 +102,7 @@ class RockPaperScissors(object):
 
         max_value = max(count for _, count in data)
         score_table_width = 38
-        increment = max_value / score_table_width
+        increment = max_value / score_table_width if max_value > 0 else 1
 
         longest_label_length = max(len(label) for label, _ in data)
 
