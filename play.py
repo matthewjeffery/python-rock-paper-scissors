@@ -32,9 +32,8 @@ class RockPaperScissors(object):
         self.player_1_name = "Player"
         self.player_2 = ""
         self.player_2_name = "Computer"
-        self.round_is_draw = False
-        self.player_1_wins = False
         self.displayed_table_width = 0
+        self.reset_attack_outcome()
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description="Play a game of Rock Paper Scissors!")
@@ -226,6 +225,10 @@ class RockPaperScissors(object):
         print(tabulate([[attack_outcome]], [width], tablefmt="simple", colalign=("center",)))
         print("\n")
 
+    def reset_attack_outcome(self):
+        self.round_is_draw = False
+        self.player_1_wins = False
+
     def write_outcome_to_score_file(self):
         if not self.args.multiplayer:
             score_file = open(self.SCORE_PATH, "a")
@@ -271,6 +274,7 @@ class RockPaperScissors(object):
         self.display_attack_choice()
         self.display_attack_outcome()
         self.write_outcome_to_score_file()
+        self.reset_attack_outcome()
         time.sleep(interval)
 
     def start(self):
